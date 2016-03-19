@@ -10,8 +10,46 @@
  ********************************************************************/
 public class SortArrayInstrumented {
 
+	private long comparisons;
+	private long totalComparisons;
+	private long minComparisons;
+	private long maxComparisons;
+	
 	public SortArrayInstrumented() {
-		
+		comparisons = 0;
+		totalComparisons = 0;
+		minComparisons = Long.MAX_VALUE;
+		maxComparisons = 0;
+	}
+	
+	public long getComparisons() {
+		return comparisons;
+	}
+	
+	public long getTotalComparisons() {
+		return totalComparisons;
+	}
+	
+	public long getMinComparisons() {
+		return minComparisons;
+	}
+	
+	public long getMaxComparisons() {
+		return maxComparisons;
+	}
+	
+	private void startStatistics() {
+		comparisons = 0;
+	}
+	
+	private void endStatistics() {
+		totalComparisons += comparisons;
+		if (comparisons < minComparisons) {
+			minComparisons = comparisons;
+		}
+		if (comparisons > maxComparisons) {
+			maxComparisons = comparisons;
+		}
 	}
 	
     /**************************************************************
@@ -24,11 +62,13 @@ public class SortArrayInstrumented {
      */
     public <T extends Comparable<? super T>> 
     void selectionSort(T[] a, int n) {
+    	startStatistics();
         for (int index = 0; index < n - 1; index++) {
             int indexOfNextSmallest = getIndexOfSmallest(a, index, n - 1);
             swap(a, index, indexOfNextSmallest);
             // Assertion: a[0] <= a[1] <= . . . <= a[index] <= all other a[unsorted]
         } // end for
+        endStatistics();
     } // end selectionSort
 
     /** Finds the index of the smallest value in an array a.
@@ -45,6 +85,7 @@ public class SortArrayInstrumented {
         T min = a[first];
         int indexOfMin = first;
         for (int index = first + 1; index <= last; index++) {
+        	comparisons++;
             if (a[index].compareTo(min) < 0) {
                 min = a[index];
                 indexOfMin = index;
@@ -81,7 +122,9 @@ public class SortArrayInstrumented {
     public  <T extends Comparable<? super T>>
     void insertionSort(T[] a, int n)
     {   
+    	startStatistics();
         insertionSort(a, 0, n-1);
+        endStatistics();
     } // end insertionSort
     
 
@@ -117,18 +160,18 @@ public class SortArrayInstrumented {
     void insertInOrder(T anEntry, T[] a, int begin, int end)
     {
     // Inserts entry into the sorted array entrys a[first] through a[last].
-    if (anEntry.compareTo(a[end]) >= 0)
-        a[end+1] = anEntry;
-            else if (begin < end)
-            {
+    	
+    	if (anEntry.compareTo(a[end]) >= 0) {
+    		comparisons++;
+    		a[end+1] = anEntry;
+    	} else if (begin < end) {
+    		comparisons++;
                 a[end+1] = a[end];
                 insertInOrder(anEntry, a, begin, end-1);
-            }
-            else // begin == end and enEntry < a[end]
-            {
+        } else { // begin == end and enEntry < a[end]
                 a[end+1] = a[end];
                 a[end] = anEntry;
-            }
+        }
     }  // end insertInOrder
     
 
@@ -209,7 +252,9 @@ public class SortArrayInstrumented {
      */
     public  <T extends Comparable<? super T>> 
     void shellSort(T[] a, int n) {
+    	startStatistics();
         shellSort(a, 0, n - 1);
+        endStatistics();
     } // end shellSort
 
     /** Use incremental insertion sort with different increments to 
@@ -248,9 +293,13 @@ public class SortArrayInstrumented {
             T nextToInsert = a[unsorted];
             index = unsorted - space;
             while ((index >= first) && (nextToInsert.compareTo(a[index]) < 0)){
-                a[index + space] = a[index];
+                comparisons++;
+            	a[index + space] = a[index];
                 index = index - space;
             } // end while
+            if (index >= first) {
+            	comparisons++;
+            }
             a[index + space] = nextToInsert;
         } // end for
     } // end incrementalInsertionSort

@@ -21,23 +21,33 @@ public class SortDriver
         Integer data[];
         
         //CREATE THE INSTANCE OF THE INSTRUMENTED SORT CLASS HERE
+        SortArrayInstrumented sai = new SortArrayInstrumented();
         
         System.out.println("What size arrays should be used?");
         arraySize = getInt("   It should be an integer value greater than or equal to 1.");
         
         // MODIFY THE FOLLOWING TO GET THE NUMBER OF TRIALS AND LOOP      
-            data = generateRandomArray(arraySize);
-            
-            System.out.println("The array is: " + getString(data));
-            SortArray.selectionSort(data, arraySize);
-           
-          
-            System.out.println("The sorted array is: " + getString(data));
+        	trials = getInt("How many trials?");
+        	for (int i = 0; i < trials; i++) {
+        		data = generateRandomArray(arraySize);
+                
+                //System.out.println("The array is: " + getString(data));
+                sai.shellSort(data, arraySize);
+               
+              
+                //System.out.println("The sorted array is: " + getString(data));
+        	}
+        	
 
         // ADD CODE TO REPORT THE NUMBER OF COMPARISONS
-
-        
-        
+            System.out.println("   Comparison made: "+sai.getComparisons());
+            System.out.println("   Total: "+sai.getTotalComparisons());
+            System.out.println("   Min: "+sai.getMinComparisons());
+            
+            long avg = (sai.getTotalComparisons())/trials;
+            System.out.println("   Avg: "+avg);
+            
+            System.out.println("   Max: "+sai.getMaxComparisons());
     }
 
 
